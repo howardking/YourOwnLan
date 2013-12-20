@@ -1,0 +1,231 @@
+语法
+
+    0 $accept: line_list $end
+
+    1 line_list: line
+    2          | line_list line
+
+    3 line: expression CR
+    4     | error CR
+
+    5 expression: term
+    6           | expression ADD term
+    7           | expression SUB term
+
+    8 term: primary_expression
+    9     | term MUL primary_expression
+   10     | term DIV primary_expression
+
+   11 primary_expression: DOUBLE_LITERAL
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256) 4
+DOUBLE_LITERAL (258) 11
+ADD (259) 6
+SUB (260) 7
+MUL (261) 9
+DIV (262) 10
+CR (263) 3 4
+
+
+Nonterminals, with rules where they appear
+
+$accept (9)
+    左： 0
+line_list (10)
+    左： 1 2, 右： 0 2
+line (11)
+    左： 3 4, 右： 1 2
+expression (12)
+    左： 5 6 7, 右： 3 6 7
+term (13)
+    左： 8 9 10, 右： 5 6 7 9 10
+primary_expression (14)
+    左： 11, 右： 8 9 10
+
+
+状态 0
+
+    0 $accept: . line_list $end
+
+    error           shift, and go to state 1
+    DOUBLE_LITERAL  shift, and go to state 2
+
+    line_list           转到状态3
+    line                转到状态4
+    expression          转到状态5
+    term                转到状态6
+    primary_expression  转到状态7
+
+
+状态 1
+
+    4 line: error . CR
+
+    CR  shift, and go to state 8
+
+
+状态 2
+
+   11 primary_expression: DOUBLE_LITERAL .
+
+    $default  reduce using rule 11 (primary_expression)
+
+
+状态 3
+
+    0 $accept: line_list . $end
+    2 line_list: line_list . line
+
+    $end            shift, and go to state 9
+    error           shift, and go to state 1
+    DOUBLE_LITERAL  shift, and go to state 2
+
+    line                转到状态10
+    expression          转到状态5
+    term                转到状态6
+    primary_expression  转到状态7
+
+
+状态 4
+
+    1 line_list: line .
+
+    $default  reduce using rule 1 (line_list)
+
+
+状态 5
+
+    3 line: expression . CR
+    6 expression: expression . ADD term
+    7           | expression . SUB term
+
+    ADD  shift, and go to state 11
+    SUB  shift, and go to state 12
+    CR   shift, and go to state 13
+
+
+状态 6
+
+    5 expression: term .
+    9 term: term . MUL primary_expression
+   10     | term . DIV primary_expression
+
+    MUL  shift, and go to state 14
+    DIV  shift, and go to state 15
+
+    $default  reduce using rule 5 (expression)
+
+
+状态 7
+
+    8 term: primary_expression .
+
+    $default  reduce using rule 8 (term)
+
+
+状态 8
+
+    4 line: error CR .
+
+    $default  reduce using rule 4 (line)
+
+
+状态 9
+
+    0 $accept: line_list $end .
+
+    $default  接受
+
+
+状态 10
+
+    2 line_list: line_list line .
+
+    $default  reduce using rule 2 (line_list)
+
+
+状态 11
+
+    6 expression: expression ADD . term
+
+    DOUBLE_LITERAL  shift, and go to state 2
+
+    term                转到状态16
+    primary_expression  转到状态7
+
+
+状态 12
+
+    7 expression: expression SUB . term
+
+    DOUBLE_LITERAL  shift, and go to state 2
+
+    term                转到状态17
+    primary_expression  转到状态7
+
+
+状态 13
+
+    3 line: expression CR .
+
+    $default  reduce using rule 3 (line)
+
+
+状态 14
+
+    9 term: term MUL . primary_expression
+
+    DOUBLE_LITERAL  shift, and go to state 2
+
+    primary_expression  转到状态18
+
+
+状态 15
+
+   10 term: term DIV . primary_expression
+
+    DOUBLE_LITERAL  shift, and go to state 2
+
+    primary_expression  转到状态19
+
+
+状态 16
+
+    6 expression: expression ADD term .
+    9 term: term . MUL primary_expression
+   10     | term . DIV primary_expression
+
+    MUL  shift, and go to state 14
+    DIV  shift, and go to state 15
+
+    $default  reduce using rule 6 (expression)
+
+
+状态 17
+
+    7 expression: expression SUB term .
+    9 term: term . MUL primary_expression
+   10     | term . DIV primary_expression
+
+    MUL  shift, and go to state 14
+    DIV  shift, and go to state 15
+
+    $default  reduce using rule 7 (expression)
+
+
+状态 18
+
+    9 term: term MUL primary_expression .
+
+    $default  reduce using rule 9 (term)
+
+
+状态 19
+
+   10 term: term DIV primary_expression .
+
+    $default  reduce using rule 10 (term)
